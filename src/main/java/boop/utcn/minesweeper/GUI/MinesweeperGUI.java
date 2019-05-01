@@ -43,16 +43,24 @@ public class MinesweeperGUI extends JFrame {
                     }
                     if(found) break;
                 }
-                if(gameON == true) {
+                if(gameON) {
                     blocks[i][j].setSelected(true);
                     if (!start) {
+                        blx[i][j] = -2;
                         spawnBombs(i, j);
                         start = true;
 
                     }
-                    open(i, j);
+                    if(blx[i][j] != -1){
+                        open(i, j);
+                        reveal();
+                    }else
+                        lose();
+                    checkWin();
                     reveal();
-                }
+
+                }else
+                    reveal();
             }
         };
 
@@ -98,6 +106,12 @@ public class MinesweeperGUI extends JFrame {
     public void reveal(){
         for(int i=0; i<height; i++){
             for(int j=0; j<width; j++){
+
+                if(blx[i][j] == 0){
+                    blocks[i][j].setText("");
+                    blocks[i][j].setSelected(false);
+                }
+
                 if(blx[i][j] == -2){
                     blocks[i][j].setText("");
                     blocks[i][j].setSelected(true);
@@ -105,6 +119,9 @@ public class MinesweeperGUI extends JFrame {
                 if(blx[i][j] > 0){
                     blocks[i][j].setText(""+blx[i][j]);
                     blocks[i][j].setSelected(true);
+                }
+                if(!gameON && blx[i][j] == -1){
+                    blocks[i][j].setSelected(false);
                 }
             }
         }
@@ -117,13 +134,39 @@ public class MinesweeperGUI extends JFrame {
             do{
                 i = (int) (Math.random()*(width-0.01));
                 j = (int) (Math.random()*(height-0.01));
-            }while(blx[i][j] == -1 && i == y && j==x);
+            }while(blx[i][j] == -1 || (i == y && j==x));
             blx[i][j] = -1;
             blocks[i][j].setText("Boom");
         }
     }
 
+    public void lose(){
+        gameON = false;
+        for(int i=0; i<height; i++){
+            for(int j =0; j<width; j++){
+                if(blx[i][j] == -1){
+                    blocks[i][j].setText("BOOM");
+                }
+            }
+        }
+        JOptionPane.showMessageDialog(null, "GAME OVER!");
+    }
 
+    public void checkWin(){
+
+        boolean won = true;
+
+        for(int i=0; i<height; i++){
+            for(int j=0; j<width; j++){
+                if(blx[i][j] == 0){
+                    won = false;
+                    break;
+                }
+            }
+            if(!won) break;
+        }
+        if(won) JOptionPane.showMessageDialog(null, "You win!");
+    }
 
 
 }
