@@ -7,7 +7,9 @@ public class App
 {
     public static void main( String[] args )
     {
-        MinesweeperGUI minesweeperGUI = new MinesweeperGUI(9, 9, 10);
+        MinesweeperGUI minesweeperGUI = new MinesweeperGUI();
         minesweeperGUI.setVisible(true);
+
+
     }
 }
